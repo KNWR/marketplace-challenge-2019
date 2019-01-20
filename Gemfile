@@ -36,7 +36,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.8'
 
   # Generate factories for test data
-  gem 'factory_bot_rails'
+  # gem 'factory_bot_rails'
 
   # The coolest fake data generating gem on the internet
   gem 'faker'
