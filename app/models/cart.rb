@@ -8,4 +8,16 @@
 #
 
 class Cart < ApplicationRecord
+
+  # add product method
+
+  # checkout method
+
+  # total price method
+
+  # list all products in cart method
+
+  # optional remove product
+
+
 end
