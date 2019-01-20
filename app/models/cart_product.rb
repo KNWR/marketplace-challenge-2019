@@ -20,5 +20,4 @@ class CartProduct < ApplicationRecord
 
   validates :cart, presence: true
   validates :product, presence: true
-
 end
