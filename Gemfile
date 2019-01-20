@@ -38,6 +38,9 @@ group :development, :test do
   # Generate factories for test data
   gem 'factory_bot_rails'
 
+  # The coolest fake data generating gem on the internet
+  gem 'faker'
+
   # Prevent data from one test contaminating another
   # gem 'database_cleaner'
 
@@ -53,6 +56,11 @@ group :development do
   gem 'spring'
 
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  # Test matcher
+  gem 'shoulda-matchers', '4.0.0.rc1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

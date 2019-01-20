@@ -11,4 +11,9 @@
 #
 
 class Product < ApplicationRecord
+  validates :title, presence: true
+  validates :inventory_count, presence: true
+  validates :price, presence: true
 end
+
+#TODO validate is >= 0, -- likely will require numericality?
