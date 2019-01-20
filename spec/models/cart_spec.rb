@@ -33,7 +33,7 @@ RSpec.describe Cart, type: :model do
   #       #expect
   #     end
   #   end
-  # end
+  end
 
   describe ".list_products" do
     it "returns a list of products" do
@@ -54,11 +54,11 @@ RSpec.describe Cart, type: :model do
     end
   end
 
-  describe ".total_price" do
+  describe ".subtotal" do
     it "returns a the total price of products in the cart" do
       cart = Cart.create
 
-      total_price = 0
+      subtotal = 0
 
       5.times do
         product = Product.create(title: Faker::Commerce.product_name,
@@ -66,10 +66,10 @@ RSpec.describe Cart, type: :model do
                                 inventory_count: Faker::Number.between(1, 10)
                               )
         cart.add(product)
-        total_price += product&.price
+        subtotal += product&.price
       end
 
-      expect(cart.total_price).to eq total_price
+      expect(cart.subtotal).to eq subtotal
     end
   end
 
@@ -94,14 +94,12 @@ RSpec.describe Cart, type: :model do
       end
     end
 
-    context "when the products in the cart are of insufficient inventory" do
+    context "when a product already added to the cart goes out of inventory" do
       cart = Cart.create
-
-      product_inventory = 1
 
       product = Product.create(title: Faker::Commerce.product_name,
                               price: Faker::Commerce.price,
-                              inventory_count: product_inventory
+                              inventory_count: 1
                             )
       cart.add(product)
 
@@ -118,7 +116,10 @@ RSpec.describe Cart, type: :model do
         cart.checkout
 
         expect(product.reload.inventory_count).to eq (0)
-        # expect(cart.reload.cart_products).to eq [] # how to handle?
+        expect{cart.checkout}.to raise_error(StandardError,
+          "Darn! Looks like that product is out of stock. I've removed it"\
+          "from your cart for you. I hope to restock it soon! - Kanwar"
+        )
       end
     end
   end

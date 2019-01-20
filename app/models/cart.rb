@@ -12,7 +12,13 @@ class Cart < ApplicationRecord
 
   # add product method
   def add(product)
-    CartProduct.create(cart: self, product: product)
+    if product.inventory_count >= 1
+      CartProduct.create(cart: self, product: product)
+    else
+      #TODO add shoot me an email text for engagement
+      puts "Darn! That product's currently out of stock. I hope to restock"\
+            "soon for you."
+    end
   end
 
   # remove method
@@ -27,25 +33,18 @@ class Cart < ApplicationRecord
       product = cart_product.product
       if product.inventory_count > 0
         product.inventory_count -= 1
-        product.save # TODO why
-        cart_product.destroy
+        product.save
+        cart_product.destroy # TODO
       else
-        #TODO depending on resolve in graphql should do here though
-        raise "Darn! Looks like that product is out of stock. I've removed"\
-              "it from your cart. Sorry about this."
+        #TODO ok need to rescue this with graphql
+        # maybe shouldn't be error ...
+        raise "Darn! Looks like that product is out of stock. I've removed it"\
+              "from your cart for you. I hope to restock it soon! - Kanwar"
       end
     end
-    # for each of the cart's cart_products
-      # if its :product's inventory >0
-        # decrement it
-        # destroy the cart_product
-      # otherwise
-        # return an error message -- no more of that product left in stock
-        # what happens then?
   end
-  # total price method
-  # or name subtotal?
-  def total_price
+
+  def subtotal
     cart_products.joins(:product).sum(:price)
   end
 
