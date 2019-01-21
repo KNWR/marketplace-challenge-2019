@@ -12,5 +12,6 @@ class User < ApplicationRecord
   has_many :cart_products
   has_one :cart
 
-  validates :username, presence: true
+  validates :username, presence: true,
+                       uniqueness: true
 end
