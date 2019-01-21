@@ -14,25 +14,35 @@ RSpec.describe Cart, type: :model do
   # add a product to the cart
   describe ".add" do
     context "there is enough (>0) inventory of the product" do
+      cart = Cart.create
+
+      product = Product.create(title: 'Snowboard',
+                            price: 50.20,
+                            inventory_count: 10)
+
       it "adds a product to the cart" do
 
-        cart = Cart.create
-
-        product = Product.create(title: 'Snowboard',
-                              price: 50.20,
-                              inventory_count: 10)
         cart.add(product)
         expect(cart.list_products[0]).to eq product
       end
     end
 
-  #   context "the product is out of stock!" do
-  #     it "does not add the product to the cart, passes an error message" do
-  #       # TODO
-  #
-  #       #expect
-  #     end
-  #   end
+    context "the product is out of stock!" do
+      cart = Cart.create
+
+      product = Product.create(title: 'Snowboard',
+                            price: 50.20,
+                            inventory_count: 0)
+
+      it "does not add the product to the cart, passes an error message" do
+        expect{cart.add(product)}.to raise_error(StandardError,
+          "Darn! That product's currently out of stock. I hope to restock"\
+          "it for you soon. - Kanwar"
+        )
+
+        expect(cart.list_products).to eq []
+      end
+    end
   end
 
   describe ".list_products" do
@@ -117,8 +127,8 @@ RSpec.describe Cart, type: :model do
 
         expect(product.reload.inventory_count).to eq (0)
         expect{cart.checkout}.to raise_error(StandardError,
-          "Darn! Looks like that product is out of stock. I've removed it"\
-          "from your cart for you. I hope to restock it soon! - Kanwar"
+          "Darn! Looks like someone else just bought the last one!"\
+          "I've removed it from your cart for you. I hope to restock it soon! - Kanwar"
         )
       end
     end

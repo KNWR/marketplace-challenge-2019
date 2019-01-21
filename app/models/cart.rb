@@ -10,36 +10,31 @@
 class Cart < ApplicationRecord
   has_many :cart_products
 
-  # add product method
   def add(product)
     if product.inventory_count >= 1
       CartProduct.create(cart: self, product: product)
     else
-      #TODO add shoot me an email text for engagement
+      #TODO rescue w GraphQL
       raise "Darn! That product's currently out of stock. I hope to restock"\
-            "soon for you. - Kanwar"
+            "it for you soon. - Kanwar"
     end
   end
 
-  # remove method
-  # def remove(product)
-  # find cart product given product and cart
-  # delete it
-  # end
-
-  # checkout method
   def checkout
     cart_products.each do |cart_product|
       product = cart_product.product
       if product.inventory_count > 0
         product.inventory_count -= 1
         product.save
-        cart_product.destroy # TODO
+        # In an actual e-commerce system, we'd want to just remove the cart_product
+        # association with the cart but not destory it. We'd keep track of the
+        # product and want associated data. We're not done with it at *least*
+        # until after the customer's happy with it.
+        cart_product.destroy
       else
-        #TODO ok need to rescue this with graphql
-        # maybe shouldn't be error ...
-        raise "Darn! Looks like that product is out of stock. I've removed it"\
-              "from your cart for you. I hope to restock it soon! - Kanwar"
+        #TODO rescue w GraphQL
+        raise "Darn! Looks like someone else just bought the last one!"\
+              "I've removed it from your cart for you. I hope to restock it soon! - Kanwar"
       end
     end
   end
@@ -48,7 +43,6 @@ class Cart < ApplicationRecord
     cart_products.joins(:product).sum(:price)
   end
 
-  # list all products in cart method
   def list_products
     cart_products.map(&:product)
   end
