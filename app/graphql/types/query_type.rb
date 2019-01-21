@@ -10,16 +10,16 @@ Types::QueryType = GraphQL::ObjectType.define do
 
   field :get_cart, Types::CartType do
 
-    argument :id, !types.ID
+    argument :username, !types.String
     resolve ->(obj, args, ctx) {
-        Cart.find(args[:id])
+      cart = User.where(username: args[:username]).first.cart
     }
   end
 
   field :get_all_products, !types[Types::ProductType] do
-    argument :in_stock, types.Boolean
+    argument :in_stock, !types.Boolean
     resolve -> (obj, args, ctx) {
-      args[:in_stock].exists? && args[:in_stock] ? Product.where("inventory_count > ?", 0) : Product.all
+      args[:in_stock] ? Product.where("inventory_count > ?", 0) : Product.all
     }
   end
 end

@@ -10,10 +10,6 @@ class GraphqlController < ApplicationController
     }
     result = ShopifyMarketplaceSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
-
-  rescue ActiveRecord::RecordInvalid, StandardError => error
-      GraphQL::ExecutionError.new("Input error: #{error.record.errors.full_messages.join(', ')}")
-      
   end
 
   private

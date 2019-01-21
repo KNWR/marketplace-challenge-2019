@@ -2,16 +2,37 @@ class Resolvers::CheckoutCart < GraphQL::Function
 
   argument :username, !types.String
 
-  def call(_obj, _args, _ctx)
-    user = User.where(username: args[:username])
+  type do
+    name 'CartCheckoutReturn'
+
+    field :username, types.String
+    field :products_purchased, types[Types::ProductType]
+    field :products, types[Types::ProductType]
+    field :subtotal_spent, types.Int
+    field :subtotal, types.Int
+  end
+
+  def call(_obj, args, _ctx)
+    user = User.where(username: args[:username]).first
     cart = user.cart
+
+    # preserving data to share about the checkout:
+    products_pre_checkout = cart.list_products
+    subtotal_pre_checkout = cart.subtotal
+
     cart.checkout
 
     OpenStruct.new({
       username: cart.user.username,
+      products_purchased: products_pre_checkout,
       products: cart.list_products,
+      subtotal_spent: subtotal_pre_checkout,
       subtotal: cart.subtotal,
       })
-  end
 
+    rescue ActiveRecord::RecordInvalid, StandardError => error
+      GraphQL::ExecutionError.new("Invalid input! #{error.full_message}")
+    rescue StandardError => error
+      GraphQL::ExecutionError.new(error.full_message)
+    end
 end

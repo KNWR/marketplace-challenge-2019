@@ -1,13 +1,19 @@
-class Resolvers::AddProductToCart < GraphQL::Function
+class Resolvers::CreateUserAndCart < GraphQL::Function
 
   argument :username, !types.String
-  argument :amount, types.Integer
+
+  type types.String
 
   def call(_obj, args, _ctx)
-    user = User.create(args[:username])
+    user = User.create(username: args[:username])
     cart = Cart.create(user: user)
 
-    OpenStruct.new({username: user.username})
-  end
+    # OpenStruct.new({username: user.username})
+    user.username
 
+  rescue ActiveRecord::RecordInvalid, StandardError => error
+    GraphQL::ExecutionError.new("Invalid input! #{error.full_message}")
+  rescue StandardError => error
+    GraphQL::ExecutionError.new(error.full_message)
+  end
 end
