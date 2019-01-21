@@ -12,8 +12,8 @@
 
 class Product < ApplicationRecord
   validates :title, presence: true
-  validates :inventory_count, presence: true
-  validates :price, presence: true
+  validates :inventory_count, presence: true,
+                              numericality: {greater_than_or_equal_to: 0}
+  validates :price, presence: true,
+                    numericality: {greater_than_or_equal_to: 0}
 end
-
-#TODO validate is >= 0, -- likely will require numericality?

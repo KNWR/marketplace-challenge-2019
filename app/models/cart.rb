@@ -16,8 +16,8 @@ class Cart < ApplicationRecord
       CartProduct.create(cart: self, product: product)
     else
       #TODO add shoot me an email text for engagement
-      puts "Darn! That product's currently out of stock. I hope to restock"\
-            "soon for you."
+      raise "Darn! That product's currently out of stock. I hope to restock"\
+            "soon for you. - Kanwar"
     end
   end
 
