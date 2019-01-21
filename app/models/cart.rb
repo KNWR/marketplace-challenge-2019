@@ -22,7 +22,6 @@ class Cart < ApplicationRecord
     if product.inventory_count >= amount
       CartProduct.create(cart: self, product: product, amount: amount)
     else
-      #TODO rescue w GraphQL
       raise "Darn! We have #{product.inventory_count} of #{product.title}. "\
             "Can't sell you more than that. I hope to restock it for you soon. - Kanwar"
     end

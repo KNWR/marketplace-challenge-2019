@@ -4,5 +4,5 @@ Types::CartType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
   field :subtotal, !types.Float
-  field :list_products, types[Types::ProductType] # fix
+  field :list_products, types[Types::ProductType]
 end
