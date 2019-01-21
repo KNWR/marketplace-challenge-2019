@@ -18,7 +18,8 @@ RSpec.describe Cart, type: :model do
 
       product = Product.create(title: 'Snowboard',
                             price: 50.20,
-                            inventory_count: 10)
+                            inventory_count: 10
+                          )
 
       it "adds a product to the cart" do
 
@@ -32,7 +33,8 @@ RSpec.describe Cart, type: :model do
 
       product = Product.create(title: 'Snowboard',
                             price: 50.20,
-                            inventory_count: 0)
+                            inventory_count: 0
+                          )
 
       it "does not add the product to the cart, passes an error message" do
         expect{cart.add(product)}.to raise_error(StandardError,
