@@ -25,6 +25,11 @@ gem 'puma', '~> 3.7'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+# pce 2 irb tho
+gem 'pry'
+gem 'pry-rails'
+
+
 # GraphQL
 gem 'graphql', '1.7.4'
 
