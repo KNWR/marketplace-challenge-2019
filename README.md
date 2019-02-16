@@ -106,11 +106,10 @@ mutation {
 - meet the order, an error is raised, rescued by GraphQL, and passed along to the API consumer
 - argument (required): `username` -- this tells us whose cart the product is to be added to
 - argument: `product_id` -- this tells us what kind of product we're adding to the cart
-- optional argument: `amount` -- we can specify if we want to add more than one of the item to the cart or not. If we leave it alone, it defaults to amount=1.
 
 ```
 mutation {
-  add_product_to_cart(username: "Tobias Lutke", product_id: 2, amount: 3) {
+  add_product_to_cart(username: "Tobias Lutke", product_id: 2) {
     # owner of the cart
     username
     # list of the products now in the cart

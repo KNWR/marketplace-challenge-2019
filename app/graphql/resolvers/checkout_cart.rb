@@ -7,9 +7,9 @@ class Resolvers::CheckoutCart < GraphQL::Function
 
     field :username, types.String
     field :products_purchased, types[Types::ProductType]
-    field :products, types[Types::ProductType]
+    field :current_products, types[Types::ProductType]
     field :subtotal_spent, types.Int
-    field :subtotal, types.Int
+    field :current_subtotal, types.Int
   end
 
   def call(_obj, args, _ctx)
@@ -25,9 +25,9 @@ class Resolvers::CheckoutCart < GraphQL::Function
     OpenStruct.new({
       username: cart.user.username,
       products_purchased: products_pre_checkout,
-      products: cart.list_products,
+      current_products: cart.list_products,
       subtotal_spent: subtotal_pre_checkout,
-      subtotal: cart.subtotal,
+      current_subtotal: cart.subtotal,
       })
 
     rescue ActiveRecord::RecordInvalid, StandardError => error

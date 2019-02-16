@@ -2,7 +2,6 @@ class Resolvers::AddProductToCart < GraphQL::Function
 
   argument :username, !types.String
   argument :product_id , !types.ID
-  argument :amount, types.Int
 
   type Types::CartType
 
@@ -10,7 +9,6 @@ class Resolvers::AddProductToCart < GraphQL::Function
     user = User.where(username: args[:username]).first
     cart = user.cart
     product = Product.where(id: args[:product_id]).first
-    args[:amount].present? ? cart.add(product, args[:amount]) : cart.add(product)
     cart.add(product)
 
     OpenStruct.new({

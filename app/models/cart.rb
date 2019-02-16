@@ -18,9 +18,11 @@ class Cart < ApplicationRecord
 
   validates :user, presence: true
 
-  def add(product, amount = 1)
-    if product.inventory_count >= amount
-      CartProduct.create(cart: self, product: product, amount: amount)
+  def add(product)
+    # To guard against if someone tries to order more of something than we have
+    if product.inventory_count > 1
+      self.cart_products << CartProduct.create(cart: self, product: product)
+
     else
       raise "Darn! We have #{product.inventory_count} of #{product.title}. "\
             "Can't sell you more than that. I hope to restock it for you soon. - Kanwar"
@@ -31,10 +33,10 @@ class Cart < ApplicationRecord
     raise "Cart is empty" if cart_products.empty?
     # Array of cart products where amount > inventory
     # Given time, would write this with SQL using .where instead of .select
-    out_of_stock = []
-    cart_products.each do |cp|
-      out_of_stock.append(cp) if (cp.product.inventory_count < cp.amount)
-    end
+    # out_of_stock = []
+    # cart_products.each do |cp|
+    #   out_of_stock.append(cp) if (cp.product.inventory_count < cp.amount)
+    # end
     # If there exist such cart_products...
     if out_of_stock.any?
       # Generate our error message before we destroy the cart_products we need
@@ -53,7 +55,7 @@ class Cart < ApplicationRecord
       cart_products.each do |cart_product|
         # Lets remove the products from our inventory
         product = cart_product.product
-        product.inventory_count -= cart_product.amount
+        product.inventory_count -= 1
         product.save
         # And reset the cart's cart_products by destroying the association
         #    using the self.prefix to make this clear
@@ -71,7 +73,7 @@ class Cart < ApplicationRecord
   def subtotal
     subtotal = 0
     cart_products.each do |cp|
-      subtotal += cp.amount * cp.product.price
+      subtotal += cp.product.price
     end
     subtotal
   end
