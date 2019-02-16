@@ -9,13 +9,13 @@ class Resolvers::AddProductToCart < GraphQL::Function
   def call(_obj, args, _ctx)
     user = User.where(username: args[:username]).first
     cart = user.cart
-    product = Product.find(args[:id])
-    args[:amount].exists? ? cart.add(product, args[:amount]) : cart.add(product)
+    product = Product.where(id: args[:product_id]).first
+    args[:amount].present? ? cart.add(product, args[:amount]) : cart.add(product)
     cart.add(product)
 
     OpenStruct.new({
       username: cart.user.username,
-      products: cart.list_products,
+      list_products: cart.list_products,
       subtotal: cart.subtotal,
       })
 

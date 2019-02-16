@@ -115,9 +115,9 @@ mutation {
     username
     # list of the products now in the cart
     list_products {
-      # current subtotal price of all items in the cart after adding the item
-      id
+      title
     }
+    # current subtotal price of all items in the cart after adding the item
     subtotal
   }
 }
