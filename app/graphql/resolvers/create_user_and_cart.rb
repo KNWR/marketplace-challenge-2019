@@ -5,6 +5,7 @@ class Resolvers::CreateUserAndCart < GraphQL::Function
   type types.String
 
   def call(_obj, args, _ctx)
+    # Does not but should: if user exists, return GQL error that they already exist
     user = User.create(username: args[:username])
     cart = Cart.create(user: user)
 
