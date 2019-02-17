@@ -21,10 +21,10 @@ class Cart < ApplicationRecord
   def add(product)
     # To guard against if someone tries to order more of something than we have
     if product.inventory_count > 1
-      # cart_products << # note to self -- not needed to create the association!
+      # cart_products << # note to self -- needed to create the association?
         # the below line automatically creates the association, as it lives on
         # the cart_product table -- t.index ["cart_id"], name: "index_cart_products_on_cart_id"
-      CartProduct.create(cart: self, product: product)
+      cart_products << CartProduct.create(cart: self, product: product)
     else
       raise "Darn! We have #{product.inventory_count} of #{product.title}. "\
             "Can't sell you more than that. I hope to restock it for you soon. - Kanwar"
@@ -54,7 +54,7 @@ class Cart < ApplicationRecord
     else
       # For each
       # ALT to below: until self.cart_products.empty? do |cart_product|
-      self.cart_products.each do |cart_product|
+      cart_products.each do |cart_product|
         # this line fixed the method - previously would skip some of the items
         # https://stackoverflow.com/questions/22259641/why-use-reload-method-after-saving-object-hartl-rails-tut-6-30
         # https://stackoverflow.com/questions/16477739/rubys-each-methods-not-iterating-over-all-items-in-an-array -- alt
