@@ -21,8 +21,10 @@ class Cart < ApplicationRecord
   def add(product)
     # To guard against if someone tries to order more of something than we have
     if product.inventory_count > 1
-      self.cart_products << CartProduct.create(cart: self, product: product)
-
+      # cart_products << # note to self -- not needed to create the association!
+        # the below line automatically creates the association, as it lives on
+        # the cart_product table -- t.index ["cart_id"], name: "index_cart_products_on_cart_id"
+      CartProduct.create(cart: self, product: product)
     else
       raise "Darn! We have #{product.inventory_count} of #{product.title}. "\
             "Can't sell you more than that. I hope to restock it for you soon. - Kanwar"
@@ -31,12 +33,11 @@ class Cart < ApplicationRecord
 
   def checkout
     raise "Cart is empty" if cart_products.empty?
-    # Array of cart products where amount > inventory
-    # Given time, would write this with SQL using .where instead of .select
-    # out_of_stock = []
-    # cart_products.each do |cp|
-    #   out_of_stock.append(cp) if (cp.product.inventory_count < cp.amount)
-    # end
+    # Array of cart products we have out of stock
+    out_of_stock = []
+    cart_products.each do |cp|
+      out_of_stock.append(cp) if (cp.product.inventory_count < 1)
+    end
     # If there exist such cart_products...
     if out_of_stock.any?
       # Generate our error message before we destroy the cart_products we need
@@ -47,27 +48,28 @@ class Cart < ApplicationRecord
                       "and left the rest of the items in the cart so you can try purchasing"\
                        "again. I hope to restock soon! - Kanwar"
       # And destroy them
-      out_of_stock.each {|cp| cp.destroy}
+      out_of_stock.each {|cp| CartProduct.find(cp.id).destroy}
       raise error_message
-    # Else there is sufficient amount of products in stock to meet the order
+    # # Else there is sufficient amount of products in stock to meet the order
     else
       # For each
-      cart_products.each do |cart_product|
+      # ALT to below: until self.cart_products.empty? do |cart_product|
+      self.cart_products.each do |cart_product|
+        # this line fixed the method - previously would skip some of the items
+        # https://stackoverflow.com/questions/22259641/why-use-reload-method-after-saving-object-hartl-rails-tut-6-30
+        # https://stackoverflow.com/questions/16477739/rubys-each-methods-not-iterating-over-all-items-in-an-array -- alt
+        # probably inefficient?
+        cart_products.reload
         # Lets remove the products from our inventory
         product = cart_product.product
         product.inventory_count -= 1
-        product.save
-        # And reset the cart's cart_products by destroying the association
-        #    using the self.prefix to make this clear
-        self.cart_products.delete(cart_product)
-        # and transfer them to the purchaser
+        # product.save
+        # cp them to the purchaser
         cart_product.user = self.user
-        self.user.save
-        cart_product.save
+        # And reset the cart's cart_products by destroying the association
+        cart_products.delete(cart_product)
       end
     end
-    self.save
-    # self.save
   end
 
   def subtotal
