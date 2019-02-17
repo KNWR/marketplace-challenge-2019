@@ -50,7 +50,7 @@ class Cart < ApplicationRecord
       # And destroy them
       out_of_stock.each {|cp| CartProduct.find(cp.id).destroy}
       raise error_message
-    # # Else there is sufficient amount of products in stock to meet the order
+    # Else there is sufficient amount of products in stock to meet the order
     else
       # For each
       # ALT to below: until self.cart_products.empty? do |cart_product|
@@ -63,7 +63,7 @@ class Cart < ApplicationRecord
         # Lets remove the products from our inventory
         product = cart_product.product
         product.inventory_count -= 1
-        # product.save
+        # product.save # not needed!
         # cp them to the purchaser
         cart_product.user = self.user
         # And reset the cart's cart_products by destroying the association
@@ -73,15 +73,11 @@ class Cart < ApplicationRecord
   end
 
   def subtotal
-    subtotal = 0
-    cart_products.each do |cp|
-      subtotal += cp.product.price
-    end
-    subtotal
+    cart_products.joins(:product).sum(:price)
   end
 
   def list_products
-    cart_products.map(&:product) # ruby tuple
+    cart_products.map(&:product)
   end
 
 end
