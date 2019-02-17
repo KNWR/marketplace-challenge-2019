@@ -1,15 +1,13 @@
 # Marketplace Challenge 2019
 
-Rails: 5.1.4
-Ruby: 2.5.1
 
-E-commerce API with GraphQL and Rails. How it works: You can purchase products by adding them to a "shopping cart", and then checking out that cart. Fun –– I've worked with Rails for work, but this was my first-time touching GraphQL. Best way of learning is doing.
+E-commerce API with GraphQL and Rails. How it works: You can purchase products by adding them to a "shopping cart", and then checking out that cart.
 
-Built w/:
-- Ruby 2.5.1
-- Ruby on Rails 5.1.4
-- Sqlite3
-- GraphQL
+## Todo:
+- add user, login via `context` in graphql
+- add policy/graphql-guard to implement permissions
+
+Built w/: Ruby 2.5.1, Ruby on Rails 5.1.4, Sqlite3, GraphQL
 
 To run locally (assuming you have ruby set up), download the repo, cd into it, run:
 `bundle install`
