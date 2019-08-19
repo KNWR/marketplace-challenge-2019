@@ -141,10 +141,10 @@ mutation {
 ## Tradeoffs:
 - If I were to do this again, I'd write it as a service; most if not all of the business logic lives in the Cart model anyway
 - For speed, did not do these, would do them with more time:
---- Used a Ruby style guide and linter
---- Used a more up to date version of GraphQL
---- Set up factorybot & databse_cleaner -- initially had it, waffled on it because wanted to move fast (and broke things) ... but spent so much time on fixing tests when the code worked, would have been better to have this set up cleanly
---- Started the project with Postgresql to be able to demo live on Heroku
---- Used context storage in GraphQL –– this would allow storing of session variables and user id, to avoid having to indicate
---- Security! Using a gem like bcrypt or JWT (if a serious project) so that you can't just perform actions on any user's cart
---- Included unit tests for the API itself. As is, tested it with Graphiql
+    - Used a Ruby style guide and linter
+    - Used a more up to date version of GraphQL
+    - Set up factorybot & databse_cleaner -- initially had it, waffled on it because wanted to move fast (and broke things) ... but spent so much time on fixing tests when the code worked, would have been better to have this set up cleanly
+    - Started the project with Postgresql to be able to demo live on Heroku
+    - Used context storage in GraphQL –– this would allow storing of session variables and user id, to avoid having to indicate
+    - Security! Using a gem like bcrypt or JWT (if a serious project) so that you can't just perform actions on any user's cart
+    - Included unit tests for the API itself. As is, tested it with Graphiql
